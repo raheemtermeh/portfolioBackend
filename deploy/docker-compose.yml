@@ -33,7 +33,7 @@ services:
 
   frontend:
     build:
-      context: ../raheemtermeh/terme-linooxel/terme-linooxel-ba829071cab2540bb0693471e570a4efaf37b054
+      context: ../../terme-linooxel
       dockerfile: Dockerfile
     container_name: portfolio_frontend
     restart: always
