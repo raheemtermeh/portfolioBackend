@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"portfolio-backend/database"
-	"portfolio-backend/models"
+	"portfolioBackend/database"
+	"portfolioBackend/models"
 
 	"github.com/gin-gonic/gin"
 )
