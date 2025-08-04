@@ -1,37 +1,27 @@
-# Dockerfile for Next.js Frontend
+# Dockerfile for Go Backend
 
-# Stage 1: Build the application
-FROM node:18-alpine AS builder
-
+# --- Build Stage ---
+# Use the official Go image to build the application
+FROM golang:1.19-alpine AS builder
 WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
+COPY go.mod go.sum ./
+# Download dependencies
+RUN go mod download
 COPY . .
+# Build the Go application
+# CGO_ENABLED=0 is important for creating a static binary
+# -o /app/main creates the output file named 'main' in the /app directory
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main .
 
-# Build the Next.js application
-RUN npm run build
-
-# Stage 2: Create the production image
-FROM node:18-alpine
-
+# --- Production Stage ---
+# Use a minimal image for the final container
+FROM alpine:latest
 WORKDIR /app
-
-# Copy built assets from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-
-# Install only production dependencies
-RUN npm install --production
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Command to start the application
-CMD ["npm", "start"]
+# Copy the built binary from the builder stage
+COPY --from=builder /app/main .
+# Copy the .env file (we will create this on the server)
+COPY .env .
+# Expose the port the Go application runs on
+EXPOSE 8080
+# Command to run the executable
+CMD ["./main"]
