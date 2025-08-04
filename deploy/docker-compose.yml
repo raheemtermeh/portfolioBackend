@@ -16,7 +16,7 @@ services:
 
   backend:
     build:
-      context: ../portfolio-backend
+      context: ..
       dockerfile: Dockerfile
     container_name: portfolio_backend
     restart: always

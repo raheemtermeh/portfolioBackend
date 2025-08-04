@@ -30,7 +30,6 @@ func ConnectDB() {
 
 	log.Println("Successfully connected to the database")
 
-	// ساخت جدول به صورت خودکار
 	DB.AutoMigrate(
         &models.ContactMessage{}, 
         &models.Skill{}, 
