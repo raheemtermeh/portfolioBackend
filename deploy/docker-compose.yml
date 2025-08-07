@@ -21,7 +21,8 @@ services:
     container_name: portfolio_backend
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DB_HOST=db
       - DB_PORT=5432
@@ -60,3 +61,9 @@ volumes:
 networks:
   portfolio-network:
     driver: bridge
+
+healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+    interval: 5s
+    timeout: 5s
+    retries: 5
